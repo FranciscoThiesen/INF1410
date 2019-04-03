@@ -1,16 +1,37 @@
 from flask import Flask, render_template
 from flask_googlemaps import GoogleMaps
 from flask_googlemaps import Map
+from home import Home
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
-api_key = '' 
+api_key = ''
 
 with open('.env') as f:
     api_key = f.readline()
+    api_key = api_key.rstrip('\n')
     f.close()
 
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data_base.db'
+
 GoogleMaps(app, key = api_key)
+
+
+def gen_markers(homes):
+    keys = ['lat', 'lng', 'infobox', 'zIndex', 'icon']
+    dft = [999, "http://maps.google.com/mapfiles/ms/icons/green-dot.png"]
+
+    atts = []
+    for  i in range(0, len(homes)):
+        atts.append(homes[i].get_atts() + dft)
+    
+    mmarkers = []
+    for i in range(0, len(homes)):
+        mmarkers.append(dict(zip(keys, atts[i])))
+    
+    return mmarkers
 
 @app.route("/")
 def mapview():
@@ -21,34 +42,28 @@ def mapview():
         lng=-122.1419,
         markers=[(37.4419, -122.1419)]
     )
+
+
+    h1 = Home(-22.97900, -43.232999, "apartamento", 2, "Apartamento compartilhado")
+    h2 = Home(-22.97800,  -43.234999, "republica", 3, "República Feminina")
+    h3 = Home(-22.97900,  -43.235000, "acampamento", 1, "morte")
+    homes = [h1, h2, h3]
+    rmarkers = gen_markers(homes)
+
+    
     sndmap = Map(
         identifier="sndmap",
         style=(
-            "height:100%;"
-            "width:100%;"
-            "top:0;"
-            "left:0;"
+            "height:75%;"
+            "width:50%;"
+            "top:100px;"
+            "left:550px;"
             "position:absolute;"
             "zIndex:999;"
         ),
         lat=-22.978993,
         lng=-43.233160,
-        markers=[
-          {
-             'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-             'lat': -22.97900,
-             'lng': -43.232999,
-             'infobox': "<b>Apartamento compartilhado ( 2 Vagas )</b>",
-             'zIndex' : 999
-          },
-          {
-             'icon': 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-             'lat': -22.97800,
-             'lng': -43.234999,
-             'infobox': "<b>República Feminina</b>",
-             'zIndex' : 999
-          }
-        ],
+        markers= rmarkers,
         zoom="17"
     )
     return render_template('example.html', mymap=mymap, sndmap=sndmap)
