@@ -3,10 +3,15 @@ from flask_googlemaps import GoogleMaps
 from flask_googlemaps import Map
 from home import Home
 from flask_sqlalchemy import SQLAlchemy
-
+from flask import request, redirect
+from database import get_homes_list
 
 app = Flask(__name__)
 api_key = ''
+
+#TODO
+def validate_data(data_lst):
+    pass
 
 with open('.env') as f:
     api_key = f.readline()
@@ -44,10 +49,11 @@ def mapview():
     )
 
 
-    h1 = Home(-22.97900, -43.232999, "apartamento", 2, "Apartamento compartilhado")
+    """     h1 = Home(-22.97900, -43.232999, "apartamento", 2, "Apartamento compartilhado")
     h2 = Home(-22.97800,  -43.234999, "republica", 3, "República Feminina")
     h3 = Home(-22.97900,  -43.235000, "acampamento", 1, "morte")
-    homes = [h1, h2, h3]
+    homes = [h1, h2, h3] """
+    homes = get_homes_list()
     rmarkers = gen_markers(homes)
 
     
@@ -66,7 +72,27 @@ def mapview():
         markers= rmarkers,
         zoom="17"
     )
+    
     return render_template('example.html', mymap=mymap, sndmap=sndmap)
+
+@app.route("/", methods=["POST"])
+def get_form():
+    if request.method == 'POST':
+        email = request.form['_email']
+        vagas = int(request.form['vagas'])
+        rua = request.form['rua']
+        cep = request.form['cep']
+        num = request.form['num']
+        apt = request.form['apt']
+
+    data_lst = [email, vagas, rua, cep, num, apt]
+    validate_data(data_lst)
+    #return error or succeeded
+
+
+
+    return redirect(request.url)
 
 if __name__ == "__main__":
     app.run(debug=True)
+

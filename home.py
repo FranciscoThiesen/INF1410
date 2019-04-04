@@ -13,7 +13,8 @@ class Home:
         return self.vagas
 
     def get_atts(self):
-        lst = [self.lat, self.lng, self.description]
+        full_description = "<b>" + self.description + "</b><p></p>" + "Tipo: " + self._type + "<p></p>" + "Vagas: " + str(self.vagas) + "<p></p>"
+        lst = [self.lat, self.lng, full_description]
         return lst
       
 
