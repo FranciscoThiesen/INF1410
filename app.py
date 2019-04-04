@@ -5,13 +5,11 @@ from home import Home
 from flask_sqlalchemy import SQLAlchemy
 from flask import request, redirect
 from database import get_homes_list
+import googlemaps
+from datetime import datetime
 
 app = Flask(__name__)
 api_key = ''
-
-#TODO
-def validate_data(data_lst):
-    pass
 
 with open('.env') as f:
     api_key = f.readline()
@@ -23,6 +21,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data_base.db'
 
 GoogleMaps(app, key = api_key)
 
+""" def get_coords(rua, cep, cidade, estado, numero):
+    gmaps = googlemaps.Client(key=api_key)
+    geo_code_res =  """
 
 def gen_markers(homes):
     keys = ['lat', 'lng', 'infobox', 'zIndex', 'icon']
@@ -84,12 +85,20 @@ def get_form():
         cep = request.form['cep']
         num = request.form['num']
         apt = request.form['apt']
+        dscp = request.form['descricao']
 
-    data_lst = [email, vagas, rua, cep, num, apt]
-    validate_data(data_lst)
-    #return error or succeeded
+    #debug purposes only
+    print(email + "\n" + str(vagas) + "\n" + rua + "\n" + cep + "\n" + num + "\n" + apt + "\n" + dscp)
 
+    gmaps = googlemaps.Client(key=api_key)
+    geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
+    print(geocode_result[0]['geometry']['location'])
+    lat = float (geocode_result[0]['geometry']['location']['lat'])
+    lng = float (geocode_result[0]['geometry']['location']['lng'])
+    """     print(lat)
+    print(lng) """
 
+    
 
     return redirect(request.url)
 
