@@ -1,6 +1,5 @@
 from flask import Flask, render_template
-from flask_googlemaps import GoogleMaps
-from flask_googlemaps import Map
+from flask_googlemaps import GoogleMaps, Map
 from home import Home
 from flask_sqlalchemy import SQLAlchemy
 from flask import request, redirect
@@ -15,9 +14,6 @@ with open('.env') as f:
     api_key = f.readline()
     api_key = api_key.rstrip('\n')
     f.close()
-
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data_base.db'
 
 GoogleMaps(app, key = api_key)
 
@@ -83,10 +79,10 @@ def get_form():
         tipo = request.form['_type']
 
     #debug purposes only
-    print(email + "\n" + str(vagas) + "\n" + rua
+    """ print(email + "\n" + str(vagas) + "\n" + rua
         + "\n" + cep + "\n" + str(num) + "\n" + str(apt) + "\n"
             + dscp + "\n" + tipo + "\n" + nome + "\n"
-            + cpf +"\n" + tel )
+            + cpf +"\n" + tel ) """
 
     gmaps = googlemaps.Client(key=api_key)
     try:
@@ -103,8 +99,6 @@ def get_form():
     h = Home(lat, lng, tipo, vagas, dscp, nome, cpf, tel, cep, rua, tipo, num)
 
     database.insert_data(h)       
-
-    
 
     return redirect(request.url)
 

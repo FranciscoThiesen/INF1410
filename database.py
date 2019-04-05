@@ -46,20 +46,3 @@ def insert_data(home):
              )
 
     conn.commit()
-
-""" if __name__=="__main__":
-    try:
-            conn = sqlite3.connect("data.db")
-    except:
-        print("Exception hit")
-        
-    cursor = conn.cursor()
-    cursor.execute(
-            
-            INSERT INTO Home (vagas, telefone_dono, cpf_dono, nome_dono, 
-            cep, numero, apt, rua, lat, long, tipo, descricao)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-           , (5,"telefone", "cpf", "nome", "cep", 10, 1001, "Rua Cosme Velho", -22.937927, -43.195885, "tipo", "descricao")
-             )
-
-    conn.commit() """
