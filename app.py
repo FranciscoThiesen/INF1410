@@ -4,7 +4,7 @@ from flask_googlemaps import Map
 from home import Home
 from flask_sqlalchemy import SQLAlchemy
 from flask import request, redirect
-from database import get_homes_list
+import database
 import googlemaps
 from datetime import datetime
 
@@ -20,10 +20,6 @@ with open('.env') as f:
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data_base.db'
 
 GoogleMaps(app, key = api_key)
-
-""" def get_coords(rua, cep, cidade, estado, numero):
-    gmaps = googlemaps.Client(key=api_key)
-    geo_code_res =  """
 
 def gen_markers(homes):
     keys = ['lat', 'lng', 'infobox', 'zIndex', 'icon']
@@ -49,12 +45,7 @@ def mapview():
         markers=[(37.4419, -122.1419)]
     )
 
-
-    """     h1 = Home(-22.97900, -43.232999, "apartamento", 2, "Apartamento compartilhado")
-    h2 = Home(-22.97800,  -43.234999, "republica", 3, "República Feminina")
-    h3 = Home(-22.97900,  -43.235000, "acampamento", 1, "morte")
-    homes = [h1, h2, h3] """
-    homes = get_homes_list()
+    homes = database.get_homes_list()
     rmarkers = gen_markers(homes)
 
     
@@ -79,24 +70,39 @@ def mapview():
 @app.route("/", methods=["POST"])
 def get_form():
     if request.method == 'POST':
+        nome = request.form['nome']
+        cpf = request.form['cpf']
+        tel = request.form['telefone']
         email = request.form['_email']
         vagas = int(request.form['vagas'])
         rua = request.form['rua']
         cep = request.form['cep']
-        num = request.form['num']
-        apt = request.form['apt']
+        num = int(request.form['num'])
+        apt = int(request.form['apt'])
         dscp = request.form['descricao']
+        tipo = request.form['_type']
 
     #debug purposes only
-    print(email + "\n" + str(vagas) + "\n" + rua + "\n" + cep + "\n" + num + "\n" + apt + "\n" + dscp)
+    print(email + "\n" + str(vagas) + "\n" + rua
+        + "\n" + cep + "\n" + str(num) + "\n" + str(apt) + "\n"
+            + dscp + "\n" + tipo + "\n" + nome + "\n"
+            + cpf +"\n" + tel )
 
     gmaps = googlemaps.Client(key=api_key)
-    geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
-    print(geocode_result[0]['geometry']['location'])
-    lat = float (geocode_result[0]['geometry']['location']['lat'])
-    lng = float (geocode_result[0]['geometry']['location']['lng'])
-    """     print(lat)
-    print(lng) """
+    try:
+        geocode_result = gmaps.geocode(str(num)+' '+ rua +', Rio de Janeiro, '+ 'RJ')
+        #print(geocode_result[0]['geometry']['location'])
+        lat = float (geocode_result[0]['geometry']['location']['lat'])
+        lng = float (geocode_result[0]['geometry']['location']['lng'])
+        """     print(lat)
+        print(lng) """
+    except:
+        print("Unable to get latitude and longitude from address")
+        raise(ValueError)
+    
+    h = Home(lat, lng, tipo, vagas, dscp, nome, cpf, tel, cep, rua, tipo, num)
+
+    database.insert_data(h)       
 
     
 

@@ -8,7 +8,19 @@
         {{sndmap.html}}
         <form method="POST">
             <div class="form-group">
-              <label for="formControlEmail">Endereço de Email:</label>
+                <label for="Nome">Nome:</label>
+                <input type="text" id="Nome" placeholder="Jordan Peterson" name="nome">
+                <p></p>
+            <div class="form-group">
+                <label for="CPF">CPF:</label>
+                <input type="text" id="cpf" name="cpf">
+                <p></p>
+            <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input type="tel" id="tel" name="telefone">
+                <p></p>
+            <div class="form-group">
+              <label for="formControlEmail">Email:</label>
               <input type="email" class="form-control" id="formControlEmail" placeholder="name@example.com" name="_email">
               <p></p>
             </div>
@@ -28,6 +40,15 @@
               </select>
             </div>
            <p></p>
+           <div class="form-group">
+            <label for="Tipo de Moradia">Tipo de Moradia:</label>
+            <select class="form-control" id="tipoMoradia" name="_type">
+              <option>Apartamento</option>
+              <option>República</option>
+              <option>Casa</option>
+            </select>
+          </div>
+          <p></p>
             <div class="form-group">
               <label for="Street">Rua: </label> <t></t> 
               <input type="text" cols="20" rows="1" name="rua" placeholder="Avenida Borges de Medeiros" >
