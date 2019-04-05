@@ -33,19 +33,11 @@ def gen_markers(homes):
 
 @app.route("/")
 def mapview():
-    # creating a map in the view
-    mymap = Map(
-        identifier="view-side",
-        lat=37.4419,
-        lng=-122.1419,
-        markers=[(37.4419, -122.1419)]
-    )
 
     homes = database.get_homes_list()
     rmarkers = gen_markers(homes)
 
-    
-    sndmap = Map(
+    mymap = Map(
         identifier="sndmap",
         style=(
             "height:75%;"
@@ -57,11 +49,11 @@ def mapview():
         ),
         lat=-22.978993,
         lng=-43.233160,
-        markers= rmarkers,
-        zoom="17"
+        markers = rmarkers,
+        zoom="16"
     )
     
-    return render_template('example.html', mymap=mymap, sndmap=sndmap)
+    return render_template('map.html', sndmap=mymap)
 
 @app.route("/", methods=["POST"])
 def get_form():
@@ -78,20 +70,12 @@ def get_form():
         dscp = request.form['descricao']
         tipo = request.form['_type']
 
-    #debug purposes only
-    """ print(email + "\n" + str(vagas) + "\n" + rua
-        + "\n" + cep + "\n" + str(num) + "\n" + str(apt) + "\n"
-            + dscp + "\n" + tipo + "\n" + nome + "\n"
-            + cpf +"\n" + tel ) """
-
     gmaps = googlemaps.Client(key=api_key)
     try:
         geocode_result = gmaps.geocode(str(num)+' '+ rua +', Rio de Janeiro, '+ 'RJ')
         #print(geocode_result[0]['geometry']['location'])
         lat = float (geocode_result[0]['geometry']['location']['lat'])
         lng = float (geocode_result[0]['geometry']['location']['lng'])
-        """     print(lat)
-        print(lng) """
     except:
         print("Unable to get latitude and longitude from address")
         raise(ValueError)
